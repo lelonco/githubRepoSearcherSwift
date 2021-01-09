@@ -14,6 +14,13 @@ enum SortingType:String {
 
 class RequestBuilder {
     
+    static func searchRepo(text: String) -> GitApiRequest {
+        let gitApi = GitApiRequest(endPoint: "search/repositories")
+        let perPage = 50
+        let queryparam = ["q":text,"sort":"stars", "order": "asc", "per_page": "\(perPage)"]
+        gitApi.queryParam = queryparam
+        return gitApi
+    }
 //    private static let encoder = JSONEncoder()
 //    private static let accessManager = AccessManager.shared
 //    
