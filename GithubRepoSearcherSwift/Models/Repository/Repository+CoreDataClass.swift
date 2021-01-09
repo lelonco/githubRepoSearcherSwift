@@ -32,9 +32,9 @@ public class Repository: NSManagedObject, Decodable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         do {
             self.id = try values.decode(Int32.self, forKey: .id)
-            self.name = try? values.decode(String.self, forKey: .name) ?? "Can't find name :("
-            self.language = try? values.decode(String.self, forKey: .language) ?? "Can't find language :("
-            self.fullName = try values.decode(String.self, forKey: .fullName)
+            self.name = try values.decode(String.self, forKey: .name)
+            self.language = (try? values.decode(String.self, forKey: .language)) ?? "Can't find language :("
+            self.fullName = (try? values.decode(String.self, forKey: .fullName))  ?? "Can't find name :("
         } catch {
             print ("error")
         }
