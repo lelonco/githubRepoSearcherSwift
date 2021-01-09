@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Repository" representedClassName=".Repository" syncable="YES" codeGenerationType="class">
+        <attribute name="commitsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fullName" optional="YES" attributeType="String"/>
+        <attribute name="language" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="SearchResult" representedClassName="SearchResult" syncable="YES" codeGenerationType="class">
+        <attribute name="searchRequest" optional="YES" attributeType="String"/>
+        <relationship name="results" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Repository"/>
+    </entity>
+    <elements>
+        <element name="Repository" positionX="127.6109619140625" positionY="122.4317016601562" width="128" height="103"/>
+        <element name="SearchResult" positionX="-45" positionY="18" width="148.7657470703125" height="73"/>
+    </elements>
+</model>
