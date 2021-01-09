@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct RepostiryCellViewModel {
+    let fullName: String
+    let language: String
+}
