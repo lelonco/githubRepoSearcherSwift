@@ -17,7 +17,7 @@ class NetworkManager: NSObject {
         self.session = URLSession.shared
         self.baseUrl = URL(string: "https://api.github.com/")!
     }
-    func makeRequest(_ request: TestApiRequest, success:@escaping (URLResponse?, Any?) -> (), failure:@escaping (Error) -> ()) {
+    func makeRequest(_ request: GitApiRequest, success:@escaping (URLResponse?, Any?) -> (), failure:@escaping (Error) -> ()) {
         guard firstFailureRequest == nil else { return }
         guard let urlRequest = self.prepareUrlRequest(with: request, failure: failure) else {
             return
@@ -47,7 +47,7 @@ class NetworkManager: NSObject {
         task.resume()
     }
     
-    private func prepareUrlRequest(with request: TestApiRequest, failure:@escaping (Error) -> ()) -> URLRequest? {
+    private func prepareUrlRequest(with request: GitApiRequest, failure:@escaping (Error) -> ()) -> URLRequest? {
         
         guard let endPoint = request.endPoint else {
             let error = NSError(domain: "Cant get endpoint", code: -999, userInfo: nil)

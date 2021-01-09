@@ -1,5 +1,5 @@
 //
-//  TestApiRequest.swift
+//  GitApiRequest.swift
 //  TestApi
 //
 //  Created by Yaroslav on 14.12.2020.
@@ -15,7 +15,7 @@ enum HttpMethod: String {
     case patch = "PATCH"
 }
 
-class TestApiRequest {
+class GitApiRequest {
     var httpMethod: HttpMethod = .get
     var endPoint: String?
     var headerParameters: [String:Any] = ["Content-Type":"application/json"]

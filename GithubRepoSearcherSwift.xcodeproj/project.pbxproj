@@ -24,7 +24,7 @@
 		B3D97BF425A22C1700B3F715 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3D97BF225A22C1700B3F715 /* LaunchScreen.storyboard */; };
 		B3D97BFF25A22C1700B3F715 /* GithubRepoSearcherSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97BFE25A22C1700B3F715 /* GithubRepoSearcherSwiftTests.swift */; };
 		B3D97C0A25A22C1700B3F715 /* GithubRepoSearcherSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C0925A22C1700B3F715 /* GithubRepoSearcherSwiftUITests.swift */; };
-		B3D97C1D25A22CF100B3F715 /* TestApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C1A25A22CF100B3F715 /* TestApiRequest.swift */; };
+		B3D97C1D25A22CF100B3F715 /* GitApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C1A25A22CF100B3F715 /* GitApiRequest.swift */; };
 		B3D97C1E25A22CF100B3F715 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C1B25A22CF100B3F715 /* NetworkManager.swift */; };
 		B3D97C1F25A22CF100B3F715 /* RequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C1C25A22CF100B3F715 /* RequestBuilder.swift */; };
 		B3D97C2825A22E4A00B3F715 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D97C2725A22E4A00B3F715 /* Reachability.swift */; };
@@ -72,7 +72,7 @@
 		B3D97C0525A22C1700B3F715 /* GithubRepoSearcherSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GithubRepoSearcherSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3D97C0925A22C1700B3F715 /* GithubRepoSearcherSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubRepoSearcherSwiftUITests.swift; sourceTree = "<group>"; };
 		B3D97C0B25A22C1700B3F715 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B3D97C1A25A22CF100B3F715 /* TestApiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApiRequest.swift; sourceTree = "<group>"; };
+		B3D97C1A25A22CF100B3F715 /* GitApiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitApiRequest.swift; sourceTree = "<group>"; };
 		B3D97C1B25A22CF100B3F715 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		B3D97C1C25A22CF100B3F715 /* RequestBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestBuilder.swift; sourceTree = "<group>"; };
 		B3D97C2725A22E4A00B3F715 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
@@ -237,7 +237,7 @@
 				B3D97C1B25A22CF100B3F715 /* NetworkManager.swift */,
 				B3D97C1C25A22CF100B3F715 /* RequestBuilder.swift */,
 				B3D97C2725A22E4A00B3F715 /* Reachability.swift */,
-				B3D97C1A25A22CF100B3F715 /* TestApiRequest.swift */,
+				B3D97C1A25A22CF100B3F715 /* GitApiRequest.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -386,7 +386,7 @@
 				B3135BB125A4DA2400AB3F6A /* Repository+CoreDataClass.swift in Sources */,
 				B3135B6525A4BD0000AB3F6A /* Model.xcdatamodeld in Sources */,
 				B3135BB325A4DA2400AB3F6A /* SearchResult+CoreDataClass.swift in Sources */,
-				B3D97C1D25A22CF100B3F715 /* TestApiRequest.swift in Sources */,
+				B3D97C1D25A22CF100B3F715 /* GitApiRequest.swift in Sources */,
 				B3D97BEA25A22C1600B3F715 /* SceneDelegate.swift in Sources */,
 				B3D97C2D25A22E9C00B3F715 /* Constants.swift in Sources */,
 			);
