@@ -143,6 +143,7 @@
 		B3135BCA25A4F7DE00AB3F6A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				B3D97BF025A22C1700B3F715 /* Assets.xcassets */,
 				B3D97C2C25A22E9C00B3F715 /* Constants.swift */,
 			);
 			path = Utils;
@@ -155,11 +156,22 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
-		B39E4EEC25A905F00034A519 /* View */ = {
+		B3710FFA25A9559000BE63C9 /* SearchViewControler */ = {
 			isa = PBXGroup;
 			children = (
 				B3D97BEB25A22C1600B3F715 /* SearchRepositoriesViewController.swift */,
 				B39E4EFB25A906540034A519 /* RepostiryTableViewCell.swift */,
+			);
+			path = SearchViewControler;
+			sourceTree = "<group>";
+		};
+		B39E4EEC25A905F00034A519 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B3D97BE725A22C1600B3F715 /* AppDelegate.swift */,
+				B3D97BE925A22C1600B3F715 /* SceneDelegate.swift */,
+				B3D97BF225A22C1700B3F715 /* LaunchScreen.storyboard */,
+				B3710FFA25A9559000BE63C9 /* SearchViewControler */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -204,10 +216,6 @@
 				B39E4EED25A905FA0034A519 /* ViewModels */,
 				B39E4EEC25A905F00034A519 /* View */,
 				B3135BEA25A50D4300AB3F6A /* JSON.json */,
-				B3D97BF025A22C1700B3F715 /* Assets.xcassets */,
-				B3D97BE925A22C1600B3F715 /* SceneDelegate.swift */,
-				B3D97BF225A22C1700B3F715 /* LaunchScreen.storyboard */,
-				B3D97BE725A22C1600B3F715 /* AppDelegate.swift */,
 				B3D97BF525A22C1700B3F715 /* Info.plist */,
 			);
 			path = GithubRepoSearcherSwift;
