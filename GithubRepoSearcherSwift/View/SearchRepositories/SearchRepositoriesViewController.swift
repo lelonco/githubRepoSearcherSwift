@@ -73,8 +73,8 @@ class SearchRepositoriesViewController: UITableViewController {
         
         let vm = searchVM?.cellVM(for: indexPath)
         
-        cell!.textLabel?.text = vm?.fullName
-        cell!.detailTextLabel?.text = vm?.language
+        cell!.textLabel?.text = vm?.titleText
+        cell!.detailTextLabel?.text = vm?.subtitleText
         cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
         cell?.accessoryView = UIImageView(image: UIImage(systemName: "paperplane.circle.fill"))
         return cell!

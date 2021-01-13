@@ -8,6 +8,6 @@
 import Foundation
 
 struct CellViewModel {
-    let fullName: String
-    let language: String
+    let titleText: String
+    let subtitleText: String
 }
