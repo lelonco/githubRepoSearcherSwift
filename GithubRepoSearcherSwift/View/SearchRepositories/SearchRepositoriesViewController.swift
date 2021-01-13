@@ -48,7 +48,12 @@ class SearchRepositoriesViewController: UITableViewController {
         guard let text = searchBar.text else {
             return
         }
-        searchVM?.fetchRepos(searchText: text)
+        do {
+            try searchVM?.fetchRepos(searchText: text)
+
+        } catch {
+            print(error.localizedDescription)
+        }
 //        findFakeRepos()
 //        findRepos()
         
