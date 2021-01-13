@@ -65,5 +65,9 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         1
     }
     
+    func titleForHeaderInSection(section: Int) -> String? {
+        repoFinder.searchResult?.searchRequest
+    }
+    
     
 }

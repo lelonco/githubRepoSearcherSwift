@@ -29,6 +29,7 @@ class SearchRepositoriesViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     override func viewDidLoad() {
+        super.viewDidLoad()
         searchBar.placeholder = "Enter repository name"
         self.navigationItem.titleView = searchBar
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(makeRequest))
@@ -36,7 +37,7 @@ class SearchRepositoriesViewController: UITableViewController {
         super.viewDidLoad()
         self.tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll")
         self.tableView.separatorStyle = .none
-        view.backgroundColor = .green
+        view.backgroundColor = .white
         searchVM?.reloadUI = {
             self.tableView.reloadData()
         }
@@ -60,7 +61,9 @@ class SearchRepositoriesViewController: UITableViewController {
     }
 
 
-    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        searchVM?.titleForHeaderInSection(section:section)
+    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         searchVM?.numberOfSections() ?? 1
