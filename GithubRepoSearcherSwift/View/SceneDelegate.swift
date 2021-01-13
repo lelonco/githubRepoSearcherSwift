@@ -19,8 +19,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        let navigationController = UINavigationController(rootViewController: SearchRepositoriesViewController())
-        window?.rootViewController = navigationController
+        
+        let searchNavigationController = UINavigationController(rootViewController: SearchRepositoriesViewController())
+        let cachedResult = UINavigationController(rootViewController: CachedResultsViewController())
+        let mainTabbar = MainTabBarController()
+        let cachedItem = UITabBarItem(tabBarSystemItem: .history, tag: 1)
+        let searchItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
+        cachedResult.tabBarItem = cachedItem
+        searchNavigationController.tabBarItem = searchItem
+        
+        mainTabbar.viewControllers = [searchNavigationController,cachedResult]
+        window?.rootViewController = mainTabbar
         window?.makeKeyAndVisible()
 
     }
