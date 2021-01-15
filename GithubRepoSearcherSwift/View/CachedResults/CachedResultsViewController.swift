@@ -32,6 +32,11 @@ class CachedResultsViewController: UITableViewController {
         self.title = "Cached results"
         tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        cachedResultsViewModel?.fetchCachedResults()
+    }
     //MARK: - UITableViewDataSource
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -55,7 +60,9 @@ class CachedResultsViewController: UITableViewController {
     //MARK: - UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //
+        guard let searchVM = cachedResultsViewModel?.viewModel(for: indexPath) else { return }
+        let vc = SearchRepositoriesViewController(viewModel: searchVM)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
