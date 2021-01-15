@@ -10,4 +10,5 @@ import Foundation
 struct CellViewModel {
     let titleText: String
     let subtitleText: String
+    let starsCount: Int?
 }

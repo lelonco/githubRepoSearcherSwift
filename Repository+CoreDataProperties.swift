@@ -20,6 +20,7 @@ extension Repository {
     @NSManaged public var language: String?
     @NSManaged public var name: String?
     @NSManaged public var id: Int32
+    @NSManaged public var starsCount: Int32
 
 }
 

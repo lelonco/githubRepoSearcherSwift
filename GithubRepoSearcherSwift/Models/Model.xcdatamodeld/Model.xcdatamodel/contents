@@ -5,6 +5,7 @@
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="starsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="SearchResult" representedClassName=".SearchResult" syncable="YES">
         <attribute name="localUUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -12,7 +13,7 @@
         <relationship name="results" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Repository"/>
     </entity>
     <elements>
-        <element name="Repository" positionX="127.6109619140625" positionY="122.4317016601562" width="128" height="89"/>
-        <element name="SearchResult" positionX="-45" positionY="18" width="148.7657470703125" height="74"/>
+        <element name="Repository" positionX="184.9371337890625" positionY="241.1336669921874" width="128" height="118"/>
+        <element name="SearchResult" positionX="-45" positionY="18" width="148.7657470703125" height="88"/>
     </elements>
 </model>
