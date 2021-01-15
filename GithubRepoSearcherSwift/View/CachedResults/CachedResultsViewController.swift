@@ -20,7 +20,9 @@ class CachedResultsViewController: UITableViewController {
         super.init(nibName: nil, bundle: nil)
         cachedResultsViewModel = CachedResultsViewModel()
         cachedResultsViewModel?.reloadUI = {
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 
