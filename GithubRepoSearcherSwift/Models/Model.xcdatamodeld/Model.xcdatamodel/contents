@@ -6,14 +6,15 @@
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="starsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="searchResult" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SearchResult" inverseName="results" inverseEntity="SearchResult"/>
     </entity>
     <entity name="SearchResult" representedClassName=".SearchResult" syncable="YES">
         <attribute name="localUUID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="searchRequest" optional="YES" attributeType="String"/>
-        <relationship name="results" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Repository"/>
+        <relationship name="results" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Repository" inverseName="searchResult" inverseEntity="Repository"/>
     </entity>
     <elements>
-        <element name="Repository" positionX="184.9371337890625" positionY="241.1336669921874" width="128" height="118"/>
+        <element name="Repository" positionX="184.9371337890625" positionY="241.1336669921874" width="128" height="133"/>
         <element name="SearchResult" positionX="-45" positionY="18" width="148.7657470703125" height="88"/>
     </elements>
 </model>
