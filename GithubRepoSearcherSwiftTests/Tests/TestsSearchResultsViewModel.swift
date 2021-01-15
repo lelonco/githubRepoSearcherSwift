@@ -33,6 +33,8 @@ class TestsSearchResultsViewModel: XCTestCase {
     func testNumberOfRows() throws {
         fakeRepoFinder.createFakeEntity()
         let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
+        XCTAssertNoThrow(try testVM.fetchRepos(searchText: "Test"))
+
        XCTAssert(testVM.numberOfRowsInSection() == 1, "Expected 1 row")
     }
     
@@ -47,6 +49,7 @@ class TestsSearchResultsViewModel: XCTestCase {
         let fakeRepoFinder = TestableRepoFinder()
         fakeRepoFinder.createFakeEntity()
         let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
+        XCTAssertNoThrow(try testVM.fetchRepos(searchText: "Test"))
         let cellVM = testVM.cellVM(for: IndexPath(row: 0, section: 0))
         
         XCTAssert(cellVM.titleText == "TestRepos/TestRepo", "Unexpected value")

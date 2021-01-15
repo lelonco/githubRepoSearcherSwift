@@ -25,6 +25,12 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         return controller
     }()
     
+    init(result:SearchResult, repoFinder: RepoFinderProtocol = RepoFinder()) {
+        self.searchResult = result
+        self.repoFinder = repoFinder
+        super.init()
+    }
+    
     init(_ repoFinder: RepoFinderProtocol = RepoFinder()) {
         self.repoFinder = repoFinder
 
@@ -35,7 +41,26 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
 
     func fetchRepos(searchText: String) throws {
         var possibleError:Error? = nil
-        repoFinder.findRepositories(with: searchText, dbContainer: dbContainer) { _ in } failure: { (error) in
+        let fetchReq: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
+        fetchReq.predicate = NSPredicate(format: "searchRequest == %@", searchText)
+        fetchReq.sortDescriptors = [NSSortDescriptor(key: "searchRequest", ascending: false)]
+        
+            //        request.predicate()
+        var savedResult: SearchResult? = nil
+        do {
+            savedResult = try context.fetch(fetchReq).first
+        } catch {
+            throw(error)
+        }
+        self.searchResult = savedResult ?? SearchResult(context: context)
+        self.searchResult?.searchRequest = searchText
+        guard let unwrappedResult = self.searchResult else {
+            throw(NSError(domain: "Cant unwrap entity", code: -999, userInfo: nil))
+        }
+        dbContainer.saveContext()
+        repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
+            self.searchResult = result
+        } failure: { (error) in
             possibleError = error
         }
         if let error = possibleError {
@@ -44,21 +69,27 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     }
 
     func cellVM(for indexPath: IndexPath) -> CellViewModel {
-        let repo = (repoFinder.searchResult?.results?.allObjects as? Array<Repository>)?[indexPath.row]
+        let repo = (searchResult?.results?.allObjects as? Array<Repository>)?[indexPath.row]
         let name = repo?.fullName ?? ""
         let language = repo?.language ?? ""
-        return CellViewModel(titleText:name, subtitleText:language)
+        let stars = Int(repo?.starsCount ?? 0)
+        return CellViewModel(titleText:name, subtitleText:language,starsCount: stars)
     }
     
     var context: NSManagedObjectContext = {
         DatabaseManager.shared.persistantContainer.viewContext
     }()
+    
+    func title() -> String? {
+        searchResult?.searchRequest
+    }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith diff: CollectionDifference<NSManagedObjectID>) {
         self.reloadUI?()
     }
 
     func numberOfRowsInSection() -> Int? {
-        repoFinder.searchResult?.results?.count
+        searchResult?.results?.count
     }
     
     func numberOfSections() -> Int {
@@ -66,7 +97,7 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     }
     
     func titleForHeaderInSection(section: Int) -> String? {
-        repoFinder.searchResult?.searchRequest
+        searchResult?.searchRequest
     }
     
     

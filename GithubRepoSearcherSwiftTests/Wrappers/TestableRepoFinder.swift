@@ -12,10 +12,18 @@ import CoreData
 class TestableRepoFinder: RepoFinderProtocol {
     var searchResult: SearchResult?
 
-    func findRepositories(with text: String, dbContainer: PersistentContainer, success: @escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
+    func findRepositories(with entity: SearchResult, dbContainer: PersistentContainer, success: @escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
+        if let seatchResult = self.searchResult {
+            success(seatchResult)
+            return
+        }
         let context = dbContainer.viewContext
         let searchResult = SearchResult(context: context)
-        searchResult.searchRequest = text
+        guard let text = entity.searchRequest else {
+            failure(NSError(domain: "Cant get search tex", code: -999, userInfo: nil))
+            return
+        }
+        self.searchResult = entity
         dbContainer.saveContext()
         guard let path = Bundle.main.path(forResource: "JSON", ofType: "json") else {
             failure(NSError(domain: "Cant get file path", code: -999, userInfo: nil))

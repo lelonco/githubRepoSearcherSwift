@@ -6,10 +6,10 @@
 //
 
 import Foundation
-
+import CoreData
 protocol RepoFinderProtocol {
     var searchResult:SearchResult? { get }
-    func findRepositories(with text: String, dbContainer: PersistentContainer , success:@escaping (SearchResult) -> Void, failure:@escaping (Error) -> Void)
+    func findRepositories(with entity: SearchResult, dbContainer: PersistentContainer , success:@escaping (SearchResult) -> Void, failure:@escaping (Error) -> Void)
 }
 
 class RepoFinder: RepoFinderProtocol {
@@ -17,12 +17,13 @@ class RepoFinder: RepoFinderProtocol {
     
     private let networkManager = NetworkManager.shared
 
-    func findRepositories(with text: String, dbContainer: PersistentContainer, success:@escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
+    func findRepositories(with entity: SearchResult, dbContainer: PersistentContainer, success:@escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
         let context = dbContainer.viewContext
-        self.searchResult = SearchResult(context: context)
-        self.searchResult?.searchRequest = text
-        dbContainer.saveContext()
-        
+        guard let text = entity.searchRequest else {
+            failure(NSError(domain: "Cant get search tex", code: -999, userInfo: nil))
+            return
+        }
+        self.searchResult = entity
         let request = RequestBuilder.searchRepo(text: text)
         let decoder = JSONDecoder()
         networkManager.makeRequest(request, success: { (response, object) in
@@ -32,9 +33,10 @@ class RepoFinder: RepoFinderProtocol {
                     throw(NSError(domain: "Cant get items", code: -999, userInfo: nil))
                 }
                 let data = try JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted])
-
+//                print(try JSONSerialization.jsonObject(with: object as! Data, options: []) as? [String:Any])
+//                print(String(data: data, encoding: .utf8))
                 let repo = try decoder.decode([Repository].self, from: data)
-                self.searchResult?.addToResults(NSSet(array: repo))
+                entity.addToResults(NSSet(array: repo))
                 dbContainer.saveContext()
             } catch {
                 failure(error)
