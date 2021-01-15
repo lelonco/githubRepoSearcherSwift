@@ -9,6 +9,7 @@ import UIKit
 import CoreData
 
 class SearchRepositoriesViewController: UITableViewController {
+    var didSearchModeEnabled = true
     var searchVM: SearchReposirotiesViewModel? {
         didSet {
             DispatchQueue.main.async {
@@ -19,7 +20,12 @@ class SearchRepositoriesViewController: UITableViewController {
     
     lazy var searchBar = UISearchBar(frame: .zero)
     
-
+    init(viewModel: SearchReposirotiesViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        searchVM = viewModel
+        didSearchModeEnabled = false
+    }
+    
     init() {
         super.init(nibName: nil, bundle: nil)
         searchVM = SearchReposirotiesViewModel()
@@ -28,22 +34,32 @@ class SearchRepositoriesViewController: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func loadView() {
+        super.loadView()
+        if !didSearchModeEnabled  {
+            self.title = searchVM?.title()
+        } else {
+            searchBar.placeholder = "Enter repository name"
+            self.navigationItem.titleView = searchBar
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(makeRequest))
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchBar.placeholder = "Enter repository name"
-        self.navigationItem.titleView = searchBar
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(makeRequest))
 
-        super.viewDidLoad()
-        self.tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll")
+        self.tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll\(didSearchModeEnabled)")
         self.tableView.separatorStyle = .none
         view.backgroundColor = .white
+        // Do any additional setup after loading the view.
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         searchVM?.reloadUI = {
             self.tableView.reloadData()
         }
-        // Do any additional setup after loading the view.
+
     }
-    
     @objc
     func makeRequest() {
         guard let text = searchBar.text else {
@@ -72,14 +88,14 @@ class SearchRepositoriesViewController: UITableViewController {
         searchVM?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Celll") as? RepostiryTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Celll\(didSearchModeEnabled)") as? RepostiryTableViewCell
         
         let vm = searchVM?.cellVM(for: indexPath)
-        
-        cell!.textLabel?.text = vm?.titleText
-        cell!.detailTextLabel?.text = vm?.subtitleText
-        cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
-        cell?.accessoryView = UIImageView(image: UIImage(systemName: "paperplane.circle.fill"))
+        cell!.repositoryVM = vm
+//        cell!.textLabel?.text = vm?.titleText
+//        cell!.detailTextLabel?.text = vm?.subtitleText
+//        cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
+  
         return cell!
     }
 }
