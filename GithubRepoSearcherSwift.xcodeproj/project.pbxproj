@@ -242,15 +242,15 @@
 			isa = PBXGroup;
 			children = (
 				B3135BD125A5044F00AB3F6A /* CoreData */,
-				B3135BC125A4F1E000AB3F6A /* Extensions */,
 				B3135B7725A4D63700AB3F6A /* Models */,
 				B3D97C2325A22CFA00B3F715 /* Network */,
 				B3135BCA25A4F7DE00AB3F6A /* Utils */,
 				B3DE679725AF9D1C00A90417 /* Services */,
 				B39E4EED25A905FA0034A519 /* ViewModels */,
 				B39E4EEC25A905F00034A519 /* View */,
-				B3135BEA25A50D4300AB3F6A /* JSON.json */,
+				B3135BC125A4F1E000AB3F6A /* Extensions */,
 				B3D97BF525A22C1700B3F715 /* Info.plist */,
+				B3135BEA25A50D4300AB3F6A /* JSON.json */,
 			);
 			path = GithubRepoSearcherSwift;
 			sourceTree = "<group>";
