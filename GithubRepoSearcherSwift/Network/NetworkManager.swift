@@ -12,12 +12,13 @@ class NetworkManager: NSObject {
     let session: URLSession
     let baseUrl: URL
     var errorSleepTime = 5
-    var firstFailureRequest: URLRequest? = nil
+    var firstFailureRequest: URLRequest?
     private override init() {
         self.session = URLSession.shared
         self.baseUrl = URL(string: "https://api.github.com/")!
     }
-    func makeRequest(_ request: GitApiRequest, success:@escaping (URLResponse?, Any?) -> (), failure:@escaping (Error) -> ()) {
+    func makeRequest(_ request: GitApiRequest,
+                     success:@escaping (URLResponse?, Any?) -> Void, failure:@escaping (Error) -> Void) {
         guard firstFailureRequest == nil else { return }
         guard let urlRequest = self.prepareUrlRequest(with: request, failure: failure) else {
             return
@@ -46,21 +47,21 @@ class NetworkManager: NSObject {
         }
         task.resume()
     }
-    
-    private func prepareUrlRequest(with request: GitApiRequest, failure:@escaping (Error) -> ()) -> URLRequest? {
-        
+
+    private func prepareUrlRequest(with request: GitApiRequest, failure:@escaping (Error) -> Void) -> URLRequest? {
+
         guard let endPoint = request.endPoint else {
             let error = NSError(domain: "Cant get endpoint", code: -999, userInfo: nil)
             failure(error)
             return nil
         }
-        guard let url = URL(string:endPoint, relativeTo: baseUrl) else {
+        guard let url = URL(string: endPoint, relativeTo: baseUrl) else {
             let error = NSError(domain: "Cant create url!", code: -999, userInfo: nil)
             failure(error)
             return nil
         }
         var urlComp = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        
+
         if let queryParams = request.queryParam {
             urlComp?.queryItems = queryParams.compactMap({ (key: String, value: Any) -> URLQueryItem? in
                 return URLQueryItem(name: key, value: value as? String)
@@ -76,8 +77,9 @@ class NetworkManager: NSObject {
 
         return urlRequest
     }
-    
-    func retryLastRequest(with urlRequest: URLRequest, success:@escaping (URLResponse?, Any?) -> (), failure:@escaping (Error) -> ()) {
+
+    func retryLastRequest(with urlRequest: URLRequest,
+                          success:@escaping (URLResponse?, Any?) -> Void, failure:@escaping (Error) -> Void) {
         print("Called date:%@", Date())
         Thread.sleep(forTimeInterval: TimeInterval(errorSleepTime))
         let task = session.dataTask(with: urlRequest) { (data, response, error) in
@@ -86,7 +88,7 @@ class NetworkManager: NSObject {
                 if let error = error {
                     if let urlError =  error as? URLError {
                         if Constants.noInternetErorrs.contains(urlError.code) || !Reachability.shared.isConnected {
-                            self.errorSleepTime = self.errorSleepTime * 2
+                            self.errorSleepTime *= 2
                             Reachability.shared.isConnected = false
                             self.retryLastRequest(with: urlRequest, success: success, failure: failure)
                             return
