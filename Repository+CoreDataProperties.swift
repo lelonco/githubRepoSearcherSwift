@@ -2,7 +2,7 @@
 //  Repository+CoreDataProperties.swift
 //  GithubRepoSearcherSwift
 //
-//  Created by Yaroslav on 05.01.2021.
+//  Created by Yaroslav on 15.01.2021.
 //
 //
 
@@ -17,10 +17,11 @@ extension Repository {
     }
 
     @NSManaged public var fullName: String?
+    @NSManaged public var id: Int32
     @NSManaged public var language: String?
     @NSManaged public var name: String?
-    @NSManaged public var id: Int32
     @NSManaged public var starsCount: Int32
+    @NSManaged public var searchResult: SearchResult?
 
 }
 
