@@ -10,39 +10,40 @@ import CoreData
 
 class SearchRepositoriesViewController: UITableViewController {
     var didSearchModeEnabled = true
-    var searchVM: SearchReposirotiesViewModel? {
+    var searchviewModel: SearchReposirotiesViewModel? {
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         }
     }
-    
+
     lazy var searchBar = UISearchBar(frame: .zero)
-    
+
     init(viewModel: SearchReposirotiesViewModel) {
         super.init(nibName: nil, bundle: nil)
-        searchVM = viewModel
+        searchviewModel = viewModel
         didSearchModeEnabled = false
     }
-    
+
     init() {
         super.init(nibName: nil, bundle: nil)
-        searchVM = SearchReposirotiesViewModel()
+        searchviewModel = SearchReposirotiesViewModel()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func loadView() {
         super.loadView()
-        if !didSearchModeEnabled  {
-            self.title = searchVM?.title()
+        if !didSearchModeEnabled {
+            self.title = searchviewModel?.title()
         } else {
             searchBar.placeholder = "Enter repository name"
             self.navigationItem.titleView = searchBar
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(makeRequest))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                                     target: self, action: #selector(makeRequest))
         }
     }
     override func viewDidLoad() {
@@ -55,7 +56,7 @@ class SearchRepositoriesViewController: UITableViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        searchVM?.reloadUI = {
+        searchviewModel?.reloadUI = {
             self.tableView.reloadData()
         }
 
@@ -66,40 +67,39 @@ class SearchRepositoriesViewController: UITableViewController {
             return
         }
         do {
-            try searchVM?.fetchRepos(searchText: text)
+            try searchviewModel?.fetchRepos(searchText: text)
 
         } catch {
             print(error.localizedDescription)
         }
 //        findFakeRepos()
 //        findRepos()
-        
-    }
 
+    }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        searchVM?.titleForHeaderInSection(section:section)
+        searchviewModel?.titleForHeaderInSection(section: section)
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
-        searchVM?.numberOfSections() ?? 1
+        searchviewModel?.numberOfSections() ?? 1
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        searchVM?.numberOfRowsInSection() ?? 0
+        searchviewModel?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Celll\(didSearchModeEnabled)") as? RepostiryTableViewCell
-        
-        let vm = searchVM?.cellVM(for: indexPath)
-        cell!.repositoryVM = vm
-//        cell!.textLabel?.text = vm?.titleText
-//        cell!.detailTextLabel?.text = vm?.subtitleText
+
+        let viewModel = searchviewModel?.cellviewModel(for: indexPath)
+        cell!.repositoryviewModel = viewModel
+//        cell!.textLabel?.text = viewModel?.titleText
+//        cell!.detailTextLabel?.text = viewModel?.subtitleText
 //        cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
-  
+
         return cell!
     }
 }
 
-extension SearchRepositoriesViewController:  NSFetchedResultsControllerDelegate {
-    
+extension SearchRepositoriesViewController: NSFetchedResultsControllerDelegate {
+
 }

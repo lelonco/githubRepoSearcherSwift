@@ -10,9 +10,9 @@ import CoreData
 
 class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate {
 
-    private var searchResult: SearchResult? = nil
-    var reloadUI: (() -> ())? = nil
-    private let repoFinder:RepoFinderProtocol
+    private var searchResult: SearchResult?
+    var reloadUI: (() -> Void)?
+    private let repoFinder: RepoFinderProtocol
     private let dbContainer = DatabaseManager.shared.persistantContainer
     lazy var fetchedResultController: NSFetchedResultsController<SearchResult> = {
         let request: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
@@ -24,31 +24,31 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
                                                     cacheName: nil)
         return controller
     }()
-    
+
     lazy var repoFetchedResultController: NSFetchedResultsController<Repository>? = nil
-    
-    init(result:SearchResult, repoFinder: RepoFinderProtocol = RepoFinder()) {
+
+    init(result: SearchResult, repoFinder: RepoFinderProtocol = RepoFinder()) {
         self.searchResult = result
         self.repoFinder = repoFinder
         super.init()
     }
-    
+
     init(_ repoFinder: RepoFinderProtocol = RepoFinder()) {
         self.repoFinder = repoFinder
 
         super.init()
         fetchedResultController.delegate = self
-        try! fetchedResultController.performFetch()
+        try? fetchedResultController.performFetch()
     }
 
     func fetchRepos(searchText: String) throws {
-        var possibleError:Error? = nil
+        var possibleError: Error?
         let fetchReq: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
         fetchReq.predicate = NSPredicate(format: "searchRequest == %@", searchText)
         fetchReq.sortDescriptors = [NSSortDescriptor(key: "searchRequest", ascending: false)]
-        
+
             //        request.predicate()
-        var savedResult: SearchResult? = nil
+        var savedResult: SearchResult?
         do {
             savedResult = try context.fetch(fetchReq).first
         } catch {
@@ -59,7 +59,7 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         guard let unwrappedResult = self.searchResult else {
             throw(NSError(domain: "Cant unwrap entity", code: -999, userInfo: nil))
         }
-        
+
         dbContainer.saveContext()
         updateAndFetchRepos()
         repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
@@ -71,12 +71,12 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
             throw(error)
         }
     }
-    
+
     func updateAndFetchRepos() {
         createRepoFetchedResults()
         observeRepoFetchedResults()
     }
-    
+
     func createRepoFetchedResults() {
         guard let result = self.searchResult else { return }
         let request: NSFetchRequest<Repository> = Repository.fetchRequest()
@@ -94,27 +94,28 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
 
     func observeRepoFetchedResults() {
         repoFetchedResultController?.delegate = self
-        try! repoFetchedResultController?.performFetch()
+        try? repoFetchedResultController?.performFetch()
     }
-    func cellVM(for indexPath: IndexPath) -> CellViewModel {
+    func cellviewModel(for indexPath: IndexPath) -> CellViewModel {
         let repo = repoFetchedResultController?.fetchedObjects?[indexPath.row]
 
 //        let repo = (searchResult?.results?.allObjects as? Array<Repository>)?[indexPath.row]
         let name = repo?.fullName ?? ""
         let language = repo?.language ?? ""
         let stars = Int(repo?.starsCount ?? 0)
-        return CellViewModel(titleText:name, subtitleText:language,starsCount: stars)
+        return CellViewModel(titleText: name, subtitleText: language, starsCount: stars)
     }
-    
+
     var context: NSManagedObjectContext = {
         DatabaseManager.shared.persistantContainer.viewContext
     }()
-    
+
     func title() -> String? {
         searchResult?.searchRequest
     }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith diff: CollectionDifference<NSManagedObjectID>) {
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChangeContentWith diff: CollectionDifference<NSManagedObjectID>) {
         self.reloadUI?()
     }
 
@@ -122,14 +123,13 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         repoFetchedResultController?.fetchedObjects?.count
 //        searchResult?.results?.count
     }
-    
+
     func numberOfSections() -> Int {
         1
     }
-    
+
     func titleForHeaderInSection(section: Int) -> String? {
         searchResult?.searchRequest
     }
-    
-    
+
 }

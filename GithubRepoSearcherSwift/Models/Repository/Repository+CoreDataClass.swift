@@ -9,9 +9,8 @@
 import Foundation
 import CoreData
 
-
 public class Repository: NSManagedObject, Decodable {
-    
+
     enum CodingKeys: String, CodingKey {
         case name
         case language
@@ -19,7 +18,7 @@ public class Repository: NSManagedObject, Decodable {
         case id
         case starsCount = "stargazers_count"
     }
-    
+
     required convenience public init(from decoder: Decoder) throws {
         // return the context from the decoder userinfo dictionary
         guard let contextUserInfoKey = CodingUserInfoKey.context,
@@ -39,7 +38,7 @@ public class Repository: NSManagedObject, Decodable {
             self.fullName = (try? values.decode(String.self, forKey: .fullName))  ?? "Can't find name :("
             self.starsCount = try values.decode(Int32.self, forKey: .starsCount)
         } catch {
-            print ("error")
+            print("error")
         }
     }
 }

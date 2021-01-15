@@ -25,24 +25,25 @@ class TestRepositoryParse: XCTestCase {
             throw(NSError(domain: "Cant get file path", code: -999, userInfo: nil))
         }
         do {
-            let object = try Data(contentsOf: URL(fileURLWithPath: path) , options: .mappedIfSafe)
+            let object = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
             let decoder = JSONDecoder()
             decoder.userInfo[CodingUserInfoKey.context!] = context
-            guard let items = (try JSONSerialization.jsonObject(with: object, options: []) as? [String:Any])?["items"] else {
+            guard let items = (try JSONSerialization.jsonObject(with: object,
+                                                                options: []) as? [String: Any])?["items"] else {
                 throw(NSError(domain: "Cant get items", code: -999, userInfo: nil))
             }
             let data = try JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted])
-            
+
             let repo = try decoder.decode([Repository].self, from: data)
-            XCTAssert(repo.count == 2 , "Expected count: 2, but found: \(repo.count)")
-            XCTAssert(repo.first?.fullName == "franciscojt/albion" , "Expected count: franciscojt/albion, but found: " + (repo.first?.fullName ?? "nil"))
-            XCTAssert(repo.first?.language == "Ruby" , "Expected count: Ruby, but found: " + (repo.first?.language ?? "nil"))
-            XCTAssert(repo.first?.name == "albion" , "Expected count: albion, but found: " + (repo.first?.name ?? "nil"))
-            
-            XCTAssert(repo.last?.fullName == "HebasTheDemonic/AlbionAssistant" , "Expected count: HebasTheDemonic/AlbionAssistant, but found: " + (repo.last?.fullName ?? "nil"))
-            XCTAssert(repo.last?.language == "C#" , "Expected count: C#, but found: " + (repo.last?.language ?? "nil"))
-            XCTAssert(repo.last?.name == "AlbionAssistant" , "Expected count: AlbionAssistant, but found: " + (repo.last?.name ?? "nil"))
-            
+            XCTAssert(repo.count == 2, "Expected count: 2, but found: \(repo.count)")
+            XCTAssert(repo.first?.fullName == "franciscojt/albion", "Expected count: franciscojt/albion, but found: " + (repo.first?.fullName ?? "nil"))
+            XCTAssert(repo.first?.language == "Ruby", "Expected count: Ruby, but found: " + (repo.first?.language ?? "nil"))
+            XCTAssert(repo.first?.name == "albion", "Expected count: albion, but found: " + (repo.first?.name ?? "nil"))
+
+            XCTAssert(repo.last?.fullName == "HebasTheDemonic/AlbionAssistant", "Expected count: HebasTheDemonic/AlbionAssistant, but found: " + (repo.last?.fullName ?? "nil"))
+            XCTAssert(repo.last?.language == "C#", "Expected count: C#, but found: " + (repo.last?.language ?? "nil"))
+            XCTAssert(repo.last?.name == "AlbionAssistant", "Expected count: AlbionAssistant, but found: " + (repo.last?.name ?? "nil"))
+
         } catch {
             XCTAssertThrowsError(error)
         }
@@ -54,15 +55,18 @@ class TestRepositoryParse: XCTestCase {
             let dbManager = TestableDatabaseManager()
             let context = dbManager.managedContext
             guard let path = Bundle.main.path(forResource: "JSON", ofType: "json") else { return }
-            guard let object = try? Data(contentsOf: URL(fileURLWithPath: path) , options: .mappedIfSafe) else { return}
+            guard let object = try? Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe) else { return}
             let decoder = JSONDecoder()
             decoder.userInfo[CodingUserInfoKey.context!] = context
-            guard let items = (try? JSONSerialization.jsonObject(with: object, options: []) as? [String:Any])?["items"] else {
+            guard let items = (try? JSONSerialization.jsonObject(with: object,
+                                                                 options: []) as? [String: Any])?["items"] else {
                 return
             }
-            let data = try! JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted])
-            
-            let repo = try! decoder.decode([Repository].self, from: data)
+            guard let data = try? JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted]) else {
+                return
+            }
+
+            _ = try? decoder.decode([Repository].self, from: data)
         }
     }
 

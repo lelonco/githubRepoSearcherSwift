@@ -10,7 +10,7 @@ import XCTest
 
 class TestsSearchResultsViewModel: XCTestCase {
 
-    var dbManager:TestableDatabaseManager!
+    var dbManager: TestableDatabaseManager!
     var fakeRepoFinder: TestableRepoFinder!
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -25,35 +25,35 @@ class TestsSearchResultsViewModel: XCTestCase {
     }
 
     func testFetch() throws {
-        
-        let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
 
-        XCTAssertNoThrow(try testVM.fetchRepos(searchText: "Test"))
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
     }
     func testNumberOfRows() throws {
         fakeRepoFinder.createFakeEntity()
-        let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
-        XCTAssertNoThrow(try testVM.fetchRepos(searchText: "Test"))
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
 
-       XCTAssert(testVM.numberOfRowsInSection() == 1, "Expected 1 row")
+       XCTAssert(testviewModel.numberOfRowsInSection() == 1, "Expected 1 row")
     }
-    
+
     func testNumberOfSections() throws {
-        
+
         fakeRepoFinder.createFakeEntity()
-        let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
-       XCTAssert(testVM.numberOfSections() == 1, "Expected 1 section")
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+       XCTAssert(testviewModel.numberOfSections() == 1, "Expected 1 section")
     }
-    
-    func testCellVM() throws {
+
+    func testCellviewModel() throws {
         let fakeRepoFinder = TestableRepoFinder()
         fakeRepoFinder.createFakeEntity()
-        let testVM = SearchReposirotiesViewModel(fakeRepoFinder)
-        XCTAssertNoThrow(try testVM.fetchRepos(searchText: "Test"))
-        let cellVM = testVM.cellVM(for: IndexPath(row: 0, section: 0))
-        
-        XCTAssert(cellVM.titleText == "TestRepos/TestRepo", "Unexpected value")
-        XCTAssert(cellVM.subtitleText == "TestLanguage", "Unexpected value")
-        
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
+        let cellviewModel = testviewModel.cellviewModel(for: IndexPath(row: 0, section: 0))
+
+        XCTAssert(cellviewModel.titleText == "TestRepos/TestRepo", "Unexpected value")
+        XCTAssert(cellviewModel.subtitleText == "TestLanguage", "Unexpected value")
+
     }
 }

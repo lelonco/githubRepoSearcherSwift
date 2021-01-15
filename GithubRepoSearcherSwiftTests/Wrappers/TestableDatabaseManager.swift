@@ -14,13 +14,13 @@ class TestableDatabaseManager: DatabaseManager {
     convenience init() {
         self.init(modelName: "Model")
     }
-    
+
     override init(modelName: String) {
         super.init(modelName: modelName)
-        
+
         let persistentStoreDescription = NSPersistentStoreDescription()
         persistentStoreDescription.type = NSInMemoryStoreType
-        
+
         let container = PersistentContainer(name: modelName)
         container.persistentStoreDescriptions = [persistentStoreDescription]
 
@@ -33,6 +33,5 @@ class TestableDatabaseManager: DatabaseManager {
         self.persistantContainer = container
         self.managedContext = container.viewContext
     }
-    
-    
+
 }

@@ -18,8 +18,8 @@ enum HttpMethod: String {
 class GitApiRequest {
     var httpMethod: HttpMethod = .get
     var endPoint: String?
-    var headerParameters: [String:Any] = ["Content-Type":"application/json"]
-    var queryParam: [String:Any]?
+    var headerParameters: [String: Any] = ["Content-Type": "application/json"]
+    var queryParam: [String: Any]?
     var httpBody: Data?
     init(endPoint: String) {
         self.endPoint = endPoint

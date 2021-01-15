@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 class RepostiryTableViewCell: UITableViewCell {
 
-    var repositoryVM: CellViewModel? = nil {
+    var repositoryviewModel: CellViewModel? = nil {
         didSet {
-            self.textLabel?.text = self.repositoryVM?.titleText
-            self.detailTextLabel?.text = self.repositoryVM?.subtitleText
+            self.textLabel?.text = self.repositoryviewModel?.titleText
+            self.detailTextLabel?.text = self.repositoryviewModel?.subtitleText
             self.accessoryView = configureAccessoryView()
         }
     }
@@ -20,14 +20,14 @@ class RepostiryTableViewCell: UITableViewCell {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func configureAccessoryView() -> UIView? {
-        guard let stars = self.repositoryVM?.starsCount else { return nil }
-        
+        guard let stars = self.repositoryviewModel?.starsCount else { return nil }
+
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "star.fill"), for: .normal)
         button.setTitle(String(stars), for: .normal)

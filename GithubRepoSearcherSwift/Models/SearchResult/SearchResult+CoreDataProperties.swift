@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-
 extension SearchResult {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<SearchResult> {
@@ -38,6 +37,6 @@ extension SearchResult {
 
 }
 
-extension SearchResult : Identifiable {
+extension SearchResult: Identifiable {
 
 }

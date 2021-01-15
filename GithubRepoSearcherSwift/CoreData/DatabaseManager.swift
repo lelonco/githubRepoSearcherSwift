@@ -10,11 +10,11 @@ import CoreData
 class DatabaseManager {
     let modelName: String
     static let shared = DatabaseManager(modelName: "Model")
-    
+
     lazy var persistantContainer: PersistentContainer = {
         let persistantContainer = PersistentContainer(name: modelName)
 
-        persistantContainer.loadPersistentStores { (storeDescription, error) in
+        persistantContainer.loadPersistentStores { (_, error) in
             self.persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error {
                 print("Unresolved error: \(error.localizedDescription)")
@@ -22,7 +22,7 @@ class DatabaseManager {
         }
         return persistantContainer
     }()
-    
+
     lazy var managedContext: NSManagedObjectContext = {
         persistantContainer.viewContext
     }()
@@ -36,10 +36,9 @@ class DatabaseManager {
             }
         }
     }
-    
+
     init(modelName: String) {
         self.modelName = modelName
     }
-    
-    
+
 }

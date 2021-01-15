@@ -9,11 +9,11 @@ import Foundation
 import Network
 
 public class Reachability {
-    
+
     static let shared = Reachability()
     let monitor = NWPathMonitor()
     let queue = DispatchQueue(label: "Monitor")
-    
+
     var isConnected = true {
         didSet {
             print(isConnected ? "has internet connetcion" : "has NOT internet connetcion")

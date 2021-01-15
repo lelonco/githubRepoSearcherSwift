@@ -9,5 +9,5 @@ import Foundation
 
 struct Constants {
     static let internetReacibilityCahnged = "internetReacibilityCahngedNotification"
-    static let noInternetErorrs: [URLError.Code] = [.timedOut,.networkConnectionLost,.notConnectedToInternet]
+    static let noInternetErorrs: [URLError.Code] = [.timedOut, .networkConnectionLost, .notConnectedToInternet]
 }
