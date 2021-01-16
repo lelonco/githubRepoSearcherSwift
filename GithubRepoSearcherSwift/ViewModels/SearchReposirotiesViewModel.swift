@@ -5,11 +5,12 @@
 //  Created by Yaroslav on 08.01.2021.
 //
 
-import Foundation
 import CoreData
+import Connectivity
 
 class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate {
-
+    private let connectivity: Connectivity = Connectivity()
+    private var didReachable = true
     private var searchResult: SearchResult?
     var reloadUI: (() -> Void)?
     private let repoFinder: RepoFinderProtocol
@@ -31,8 +32,8 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         self.searchResult = result
         self.repoFinder = repoFinder
         super.init()
-        fetchedResultController.delegate = self
-        try? fetchedResultController.performFetch()
+
+        completeConfiguration()
         updateAndFetchRepos()
     }
 
@@ -40,8 +41,13 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         self.repoFinder = repoFinder
 
         super.init()
+        completeConfiguration()
+    }
+
+    func completeConfiguration() {
         fetchedResultController.delegate = self
         try? fetchedResultController.performFetch()
+        configureConnectivityNotifier()
     }
 
     func fetchRepos(searchText: String, complition: @escaping () -> Void) throws {
@@ -59,11 +65,16 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         self.searchResult = savedResult ?? SearchResult(context: context)
         self.searchResult?.searchRequest = searchText
         guard let unwrappedResult = self.searchResult else {
-            throw(NSError(domain: "Cant unwrap entity", code: -999, userInfo: nil))
+            throw(NSError(domain: "Cant unwrap entity", code: -999, userInfo: ["message": "Cant unwrap entity"]))
         }
 
         dbContainer.saveContext()
         updateAndFetchRepos()
+        if !self.didReachable {
+            throw(NSError(domain: "You re offline. \nYou steel can get your previous search results",
+                          code: -999,
+                          userInfo: ["message": "You re offline. \nYou steel can get your previous search results"]))
+        }
         repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
             self.searchResult = result
             complition()
@@ -133,5 +144,29 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
 
     func titleForHeaderInSection(section: Int) -> String? {
         searchResult?.searchRequest
+    }
+}
+
+// MARK: - Connectivity
+
+extension SearchReposirotiesViewModel {
+    func configureConnectivityNotifier() {
+        let connectivityChanged: (Connectivity) -> Void = { [weak self] connectivity in
+            switch connectivity.status {
+            
+            case .connected,
+                 .connectedViaCellular,
+                 .connectedViaWiFi:
+                self?.didReachable = true
+            case .connectedViaCellularWithoutInternet,
+                 .connectedViaWiFiWithoutInternet,
+                 .determining,
+                 .notConnected:
+                self?.didReachable = false
+            }
+        }
+        connectivity.whenConnected = connectivityChanged
+        connectivity.whenDisconnected = connectivityChanged
+        connectivity.startNotifier()
     }
 }

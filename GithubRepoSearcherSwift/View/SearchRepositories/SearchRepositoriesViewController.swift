@@ -17,7 +17,8 @@ class SearchRepositoriesViewController: UITableViewController {
             }
         }
     }
-
+    var previousSearchedText = ""
+    
     lazy var searchBar = UISearchBar(frame: .zero)
 
     init(viewModel: SearchReposirotiesViewModel) {
@@ -56,6 +57,8 @@ class SearchRepositoriesViewController: UITableViewController {
                                 forCellReuseIdentifier: RepostiryTableViewCell.reuseIdentifier)
         self.tableView.separatorStyle = .none
         view.backgroundColor = .white
+        
+        refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
         // Do any additional setup after loading the view.
     }
 
@@ -70,22 +73,18 @@ class SearchRepositoriesViewController: UITableViewController {
 
     @objc
     func makeRequest() {
-        guard let text = searchBar.text,
-              !text.isEmpty else {
+        guard let text = searchBar.text, !text.isEmpty else {
             return
         }
+        previousSearchedText = text
         do {
             self.refreshControl?.beginRefreshing()
-
             try searchviewModel?.fetchRepos(searchText: text) {
                 self.refreshControl?.endRefreshing()
             }
         } catch {
-            print(error.localizedDescription)
+            self.handleError(error)
         }
-//        findFakeRepos()
-//        findRepos()
-
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -109,7 +108,36 @@ class SearchRepositoriesViewController: UITableViewController {
 
         return cell
     }
-}
 
-extension SearchRepositoriesViewController: NSFetchedResultsControllerDelegate {
+    @objc
+    func refresh(sender: UIRefreshControl) {
+        guard sender.isRefreshing  else { return }
+        if previousSearchedText.isEmpty {
+            sender.endRefreshing()
+            return 
+        }
+        do {
+            try self.searchviewModel?.fetchRepos(searchText: previousSearchedText, complition: {
+                self.refreshControl?.endRefreshing()
+            })
+        } catch {
+            self.handleError(error)
+        }
+    }
+
+    func handleError(_ error: Error) {
+        var messageText: String
+        let nsError = error as NSError
+        if nsError.code == -999 {
+            messageText = nsError.userInfo["message"] as? String ?? ""
+        } else {
+            messageText = nsError.localizedDescription
+        }
+        let alertController = UIAlertController(title: "Error", message: messageText, preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            self.refreshControl?.endRefreshing()
+        }
+        alertController.addAction(cancel)
+        self.present(alertController, animated: true, completion: nil)
+    }
 }

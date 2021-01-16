@@ -11,7 +11,8 @@ protocol RepoFinderProtocol {
     var searchResult: SearchResult? { get }
     func findRepositories(with entity: SearchResult,
                           dbContainer: PersistentContainer,
-                          success:@escaping (SearchResult) -> Void, failure:@escaping (Error) -> Void)
+                          success:@escaping (SearchResult) -> Void,
+                          failure:@escaping (Error) -> Void)
 }
 
 class RepoFinder: RepoFinderProtocol {
@@ -21,7 +22,8 @@ class RepoFinder: RepoFinderProtocol {
 
     func findRepositories(with entity: SearchResult,
                           dbContainer: PersistentContainer,
-                          success:@escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
+                          success:@escaping (SearchResult) -> Void,
+                          failure: @escaping (Error) -> Void) {
         let context = dbContainer.viewContext
         guard let text = entity.searchRequest else {
             failure(NSError(domain: "Cant get search tex", code: -999, userInfo: nil))
@@ -44,15 +46,19 @@ class RepoFinder: RepoFinderProtocol {
                     throw(NSError(domain: "Cant get items", code: -999, userInfo: nil))
                 }
                 let itemsData = try JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted])
-//                print(try JSONSerialization.jsonObject(with: object as! Data, options: []) as? [String:Any])
-//                print(String(data: data, encoding: .utf8))
                 let repositiries = try decoder.decode([Repository].self, from: itemsData)
 
                 entity.removeFromResults(entity.results ?? [])
                 entity.addToResults(NSSet(array: repositiries))
+                self.searchResult = entity
                 dbContainer.saveContext()
+                DispatchQueue.main.async {
+                    success(entity)
+                }
             } catch {
-                failure(error)
+                DispatchQueue.main.async {
+                    failure(error)
+                }
             }
         }, failure: failure)
     }

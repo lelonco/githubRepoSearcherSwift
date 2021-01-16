@@ -28,18 +28,20 @@ class NetworkManager: NSObject {
                 if let error = error {
                     if let urlError = error as? URLError {
                         if Constants.noInternetErorrs.contains(urlError.code) || !Reachability.shared.isConnected {
-                            Reachability.shared.isConnected = false
                             failure(error)
                             self.firstFailureRequest = urlRequest
                             self.retryLastRequest(with: urlRequest, success: success, failure: failure)
                             return
                         }
                     }
-
-                    failure(error)
+                    DispatchQueue.main.async {
+                        failure(error)
+                    }
                 } else {
-                    let nsError = NSError(domain: "Something went wrong", code: -99, userInfo: nil)
-                    failure(nsError)
+                    let nsError = NSError(domain: "Something went wrong", code: -999, userInfo: nil)
+                    DispatchQueue.main.async {
+                        failure(nsError)
+                    }
                 }
                 return
             }
