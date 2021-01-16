@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		B366947725B34031007B5F6C /* Repository+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B366947625B34031007B5F6C /* Repository+CoreDataProperties.swift */; };
 		B366947F25B347D3007B5F6C /* ReuseIdentifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = B366947E25B347D3007B5F6C /* ReuseIdentifying.swift */; };
 		B366948425B37F4F007B5F6C /* Weak.swift in Sources */ = {isa = PBXBuildFile; fileRef = B366948325B37F4F007B5F6C /* Weak.swift */; };
+		B36694A825B39CD3007B5F6C /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = B36694A725B39CD3007B5F6C /* Connectivity */; };
 		B3710FF025A94C7100BE63C9 /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3710FEF25A94C7100BE63C9 /* CellViewModel.swift */; };
 		B371100025AB48FD00BE63C9 /* CachedResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3710FFF25AB48FD00BE63C9 /* CachedResultsViewController.swift */; };
 		B371100825AB49EB00BE63C9 /* CachedResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B371100725AB49EB00BE63C9 /* CachedResultsViewModel.swift */; };
@@ -108,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B36694A825B39CD3007B5F6C /* Connectivity in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +337,9 @@
 			dependencies = (
 			);
 			name = GithubRepoSearcherSwift;
+			packageProductDependencies = (
+				B36694A725B39CD3007B5F6C /* Connectivity */,
+			);
 			productName = GithubRepoSearcherSwift;
 			productReference = B3D97BE425A22C1600B3F715 /* GithubRepoSearcherSwift.app */;
 			productType = "com.apple.product-type.application";
@@ -406,6 +411,9 @@
 				Base,
 			);
 			mainGroup = B3D97BDB25A22C1600B3F715;
+			packageReferences = (
+				B36694A625B39CD3007B5F6C /* XCRemoteSwiftPackageReference "Connectivity" */,
+			);
 			productRefGroup = B3D97BE525A22C1600B3F715 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -822,6 +830,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B36694A625B39CD3007B5F6C /* XCRemoteSwiftPackageReference "Connectivity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rwbutler/Connectivity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B36694A725B39CD3007B5F6C /* Connectivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B36694A625B39CD3007B5F6C /* XCRemoteSwiftPackageReference "Connectivity" */;
+			productName = Connectivity;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		B3135B6325A4BD0000AB3F6A /* Model.xcdatamodeld */ = {
