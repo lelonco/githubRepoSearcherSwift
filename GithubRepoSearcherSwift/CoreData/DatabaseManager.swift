@@ -17,7 +17,7 @@ class DatabaseManager {
         persistantContainer.loadPersistentStores { _, error in
             self.persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error {
-                print("Unresolved error: \(error.localizedDescription)")
+                fatalError("Unresolved error: \(error.localizedDescription)")
             }
         }
         return persistantContainer
@@ -32,7 +32,7 @@ class DatabaseManager {
             do {
                 try persistantContainer.viewContext.save()
             } catch {
-                print("An error occurred while saving: \(error)")
+                fatalError("An error occurred while saving: \(error)")
             }
         }
     }
