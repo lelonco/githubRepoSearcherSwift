@@ -30,8 +30,13 @@ class RepoFinder: RepoFinderProtocol {
         self.searchResult = entity
         let request = RequestBuilder.searchRepo(text: text)
         let decoder = JSONDecoder()
-        networkManager.makeRequest(request, success: { (_, object) in
-            decoder.userInfo[CodingUserInfoKey.context!] =  context
+        networkManager.makeRequest(request,
+                                   success: { _, object in
+            guard let contextKey = CodingUserInfoKey.context else {
+                failure(NSError(domain: "Cant get context key", code: -999, userInfo: nil))
+                return
+            }
+            decoder.userInfo[contextKey] = context
             do {
                 guard let data = object as? Data,
                     let items = (try JSONSerialization.jsonObject(with: data,
@@ -49,5 +54,4 @@ class RepoFinder: RepoFinderProtocol {
             }
         }, failure: failure)
     }
-
 }

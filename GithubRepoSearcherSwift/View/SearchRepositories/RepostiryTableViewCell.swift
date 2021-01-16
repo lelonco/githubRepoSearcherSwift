@@ -14,6 +14,7 @@ class RepostiryTableViewCell: UITableViewCell {
             self.textLabel?.text = self.repositoryviewModel?.titleText
             self.detailTextLabel?.text = self.repositoryviewModel?.subtitleText
             self.accessoryView = configureAccessoryView()
+            self.accessoryType = .disclosureIndicator
         }
     }
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

@@ -14,9 +14,10 @@ class CachedResultsViewModel: NSObject {
     private lazy var fetchedResultController: NSFetchedResultsController<SearchResult> = {
         let request: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(SearchResult.searchRequest), ascending: false)
+        let context = DatabaseManager.shared.persistantContainer.viewContext
         request.sortDescriptors = [sort]
         let controller = NSFetchedResultsController(fetchRequest: request,
-                                                    managedObjectContext: DatabaseManager.shared.persistantContainer.viewContext,
+                                                    managedObjectContext: context,
                                                     sectionNameKeyPath: nil,
                                                     cacheName: nil)
         return controller

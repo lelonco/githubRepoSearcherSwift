@@ -6,13 +6,12 @@
 //
 //
 
-import Foundation
 import CoreData
-
 
 extension Repository {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Repository> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Repository> {
         return NSFetchRequest<Repository>(entityName: "Repository")
     }
 
@@ -22,9 +21,7 @@ extension Repository {
     @NSManaged public var name: String?
     @NSManaged public var starsCount: Int32
     @NSManaged public var searchResult: SearchResult?
-
 }
 
-extension Repository : Identifiable {
-
+extension Repository: Identifiable {
 }

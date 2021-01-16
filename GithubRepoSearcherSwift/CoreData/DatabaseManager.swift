@@ -14,7 +14,7 @@ class DatabaseManager {
     lazy var persistantContainer: PersistentContainer = {
         let persistantContainer = PersistentContainer(name: modelName)
 
-        persistantContainer.loadPersistentStores { (_, error) in
+        persistantContainer.loadPersistentStores { _, error in
             self.persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error {
                 print("Unresolved error: \(error.localizedDescription)")
@@ -40,5 +40,4 @@ class DatabaseManager {
     init(modelName: String) {
         self.modelName = modelName
     }
-
 }

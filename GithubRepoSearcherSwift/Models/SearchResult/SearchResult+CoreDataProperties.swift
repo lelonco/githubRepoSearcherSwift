@@ -11,13 +11,13 @@ import CoreData
 
 extension SearchResult {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SearchResult> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SearchResult> {
         return NSFetchRequest<SearchResult>(entityName: "SearchResult")
     }
     @NSManaged public var localUUID: UUID?
     @NSManaged public var searchRequest: String?
     @NSManaged public var results: NSSet?
-
 }
 
 // MARK: Generated accessors for results
@@ -34,9 +34,7 @@ extension SearchResult {
 
     @objc(removeResults:)
     @NSManaged public func removeFromResults(_ values: NSSet)
-
 }
 
 extension SearchResult: Identifiable {
-
 }

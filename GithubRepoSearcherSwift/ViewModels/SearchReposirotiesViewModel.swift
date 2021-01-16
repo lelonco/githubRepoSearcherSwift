@@ -31,6 +31,9 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         self.searchResult = result
         self.repoFinder = repoFinder
         super.init()
+        fetchedResultController.delegate = self
+        try? fetchedResultController.performFetch()
+        updateAndFetchRepos()
     }
 
     init(_ repoFinder: RepoFinderProtocol = RepoFinder()) {
@@ -64,7 +67,7 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         updateAndFetchRepos()
         repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
             self.searchResult = result
-        } failure: { (error) in
+        } failure: { error in
             possibleError = error
         }
         if let error = possibleError {
@@ -131,5 +134,4 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     func titleForHeaderInSection(section: Int) -> String? {
         searchResult?.searchRequest
     }
-
 }

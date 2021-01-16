@@ -31,6 +31,7 @@ class CachedResultsViewController: UITableViewController {
     }
 
     override func viewDidLoad() {
+        super.viewDidLoad()
         self.title = "Cached results"
         tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll")
     }
@@ -48,15 +49,15 @@ class CachedResultsViewController: UITableViewController {
         cachedResultsViewModel?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Celll") as? RepostiryTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Celll") as? RepostiryTableViewCell else {
+            assertionFailure("Cant get cell")
+            return UITableViewCell()
+        }
 
         let viewModel = cachedResultsViewModel?.cellviewModel(for: indexPath)
+        cell.repositoryviewModel = viewModel
 
-        cell!.textLabel?.text = viewModel?.titleText
-        cell!.detailTextLabel?.text = viewModel?.subtitleText
-        cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
-        cell?.accessoryView = UIImageView(image: UIImage(systemName: "paperplane.circle.fill"))
-        return cell!
+        return cell
     }
 
     // MARK: - UITableViewDelegate
@@ -66,5 +67,4 @@ class CachedResultsViewController: UITableViewController {
         let viewController = SearchRepositoriesViewController(viewModel: searchviewModel)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-
 }

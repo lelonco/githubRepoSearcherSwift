@@ -23,10 +23,10 @@ class NetworkManager: NSObject {
         guard let urlRequest = self.prepareUrlRequest(with: request, failure: failure) else {
             return
         }
-        let task = session.dataTask(with: urlRequest) { (data, response, error) in
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             guard let data = data, let response = response else {
                 if let error = error {
-                    if let urlError =  error as? URLError {
+                    if let urlError = error as? URLError {
                         if Constants.noInternetErorrs.contains(urlError.code) || !Reachability.shared.isConnected {
                             Reachability.shared.isConnected = false
                             failure(error)
@@ -63,11 +63,16 @@ class NetworkManager: NSObject {
         var urlComp = URLComponents(url: url, resolvingAgainstBaseURL: true)
 
         if let queryParams = request.queryParam {
-            urlComp?.queryItems = queryParams.compactMap({ (key: String, value: Any) -> URLQueryItem? in
+            urlComp?.queryItems = queryParams.compactMap { (key: String, value: Any) -> URLQueryItem? in
                 return URLQueryItem(name: key, value: value as? String)
-            })
+            }
         }
-        var urlRequest = URLRequest(url: (urlComp?.url)!)
+        guard let urlFromComp = urlComp?.url else {
+            let error = NSError(domain: "Cant get url", code: -999, userInfo: nil)
+            failure(error)
+            return nil
+        }
+        var urlRequest = URLRequest(url: urlFromComp)
         request.headerParameters.forEach { (key: String, value: Any) in
             urlRequest.setValue(value as? String, forHTTPHeaderField: key)
         }
@@ -82,11 +87,11 @@ class NetworkManager: NSObject {
                           success:@escaping (URLResponse?, Any?) -> Void, failure:@escaping (Error) -> Void) {
         print("Called date:%@", Date())
         Thread.sleep(forTimeInterval: TimeInterval(errorSleepTime))
-        let task = session.dataTask(with: urlRequest) { (data, response, error) in
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             print("Executed date:%@", Date())
             guard let data = data, let response = response else {
                 if let error = error {
-                    if let urlError =  error as? URLError {
+                    if let urlError = error as? URLError {
                         if Constants.noInternetErorrs.contains(urlError.code) || !Reachability.shared.isConnected {
                             self.errorSleepTime *= 2
                             Reachability.shared.isConnected = false

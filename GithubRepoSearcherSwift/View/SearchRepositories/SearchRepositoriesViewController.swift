@@ -43,9 +43,11 @@ class SearchRepositoriesViewController: UITableViewController {
             searchBar.placeholder = "Enter repository name"
             self.navigationItem.titleView = searchBar
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                                     target: self, action: #selector(makeRequest))
+                                                                     target: self,
+                                                                     action: #selector(makeRequest))
         }
     }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -54,6 +56,7 @@ class SearchRepositoriesViewController: UITableViewController {
         view.backgroundColor = .white
         // Do any additional setup after loading the view.
     }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         searchviewModel?.reloadUI = {
@@ -61,8 +64,8 @@ class SearchRepositoriesViewController: UITableViewController {
                 self.tableView.reloadData()
             }
         }
-
     }
+
     @objc
     func makeRequest() {
         guard let text = searchBar.text else {
@@ -70,7 +73,6 @@ class SearchRepositoriesViewController: UITableViewController {
         }
         do {
             try searchviewModel?.fetchRepos(searchText: text)
-
         } catch {
             print(error.localizedDescription)
         }
@@ -90,18 +92,17 @@ class SearchRepositoriesViewController: UITableViewController {
         searchviewModel?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Celll\(didSearchModeEnabled)") as? RepostiryTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? RepostiryTableViewCell else {
+            assertionFailure("Cant get cell")
+            return UITableViewCell()
+        }
 
         let viewModel = searchviewModel?.cellviewModel(for: indexPath)
-        cell!.repositoryviewModel = viewModel
-//        cell!.textLabel?.text = viewModel?.titleText
-//        cell!.detailTextLabel?.text = viewModel?.subtitleText
-//        cell!.imageView?.image = UIImage(systemName: "repeat.circle.fill")
+        cell.repositoryviewModel = viewModel
 
-        return cell!
+        return cell
     }
 }
 
 extension SearchRepositoriesViewController: NSFetchedResultsControllerDelegate {
-
 }

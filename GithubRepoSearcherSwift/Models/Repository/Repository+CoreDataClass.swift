@@ -35,7 +35,7 @@ public class Repository: NSManagedObject, Decodable {
             self.id = try values.decode(Int32.self, forKey: .id)
             self.name = try values.decode(String.self, forKey: .name)
             self.language = (try? values.decode(String.self, forKey: .language)) ?? "Can't find language :("
-            self.fullName = (try? values.decode(String.self, forKey: .fullName))  ?? "Can't find name :("
+            self.fullName = (try? values.decode(String.self, forKey: .fullName)) ?? "Can't find name :("
             self.starsCount = try values.decode(Int32.self, forKey: .starsCount)
         } catch {
             print("error")
