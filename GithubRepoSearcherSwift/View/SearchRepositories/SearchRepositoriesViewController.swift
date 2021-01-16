@@ -46,12 +46,14 @@ class SearchRepositoriesViewController: UITableViewController {
                                                                      target: self,
                                                                      action: #selector(makeRequest))
         }
+        refreshControl = UIRefreshControl()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll\(didSearchModeEnabled)")
+        self.tableView.register(RepostiryTableViewCell.self,
+                                forCellReuseIdentifier: RepostiryTableViewCell.reuseIdentifier)
         self.tableView.separatorStyle = .none
         view.backgroundColor = .white
         // Do any additional setup after loading the view.
@@ -68,11 +70,16 @@ class SearchRepositoriesViewController: UITableViewController {
 
     @objc
     func makeRequest() {
-        guard let text = searchBar.text else {
+        guard let text = searchBar.text,
+              !text.isEmpty else {
             return
         }
         do {
-            try searchviewModel?.fetchRepos(searchText: text)
+            self.refreshControl?.beginRefreshing()
+
+            try searchviewModel?.fetchRepos(searchText: text) {
+                self.refreshControl?.endRefreshing()
+            }
         } catch {
             print(error.localizedDescription)
         }
@@ -92,7 +99,7 @@ class SearchRepositoriesViewController: UITableViewController {
         searchviewModel?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as? RepostiryTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepostiryTableViewCell.reuseIdentifier) as? RepostiryTableViewCell else {
             assertionFailure("Cant get cell")
             return UITableViewCell()
         }

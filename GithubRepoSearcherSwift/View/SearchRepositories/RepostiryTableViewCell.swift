@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-class RepostiryTableViewCell: UITableViewCell {
+class RepostiryTableViewCell: UITableViewCell, ReuseIdentifying {
 
     var repositoryviewModel: CellViewModel? = nil {
         didSet {

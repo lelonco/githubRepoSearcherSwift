@@ -49,6 +49,8 @@ class CachedResultsViewModel: NSObject {
         SearchReposirotiesViewModel(result: searchResults[indexPath.row])
     }
 
+    // MARK: - Table view helpers
+
     func numberOfRowsInSection() -> Int {
         searchResults.count
     }

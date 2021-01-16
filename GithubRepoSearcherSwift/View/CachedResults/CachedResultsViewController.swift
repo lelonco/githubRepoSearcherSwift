@@ -33,13 +33,14 @@ class CachedResultsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Cached results"
-        tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: "Celll")
+        tableView.register(RepostiryTableViewCell.self, forCellReuseIdentifier: RepostiryTableViewCell.reuseIdentifier)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         cachedResultsViewModel?.fetchCachedResults()
     }
+
     // MARK: - UITableViewDataSource
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -49,7 +50,7 @@ class CachedResultsViewController: UITableViewController {
         cachedResultsViewModel?.numberOfRowsInSection() ?? 0
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Celll") as? RepostiryTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RepostiryTableViewCell.reuseIdentifier) as? RepostiryTableViewCell else {
             assertionFailure("Cant get cell")
             return UITableViewCell()
         }

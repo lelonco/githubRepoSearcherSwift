@@ -46,8 +46,10 @@ class RepoFinder: RepoFinderProtocol {
                 let itemsData = try JSONSerialization.data(withJSONObject: items, options: [.prettyPrinted])
 //                print(try JSONSerialization.jsonObject(with: object as! Data, options: []) as? [String:Any])
 //                print(String(data: data, encoding: .utf8))
-                let repo = try decoder.decode([Repository].self, from: itemsData)
-                entity.addToResults(NSSet(array: repo))
+                let repositiries = try decoder.decode([Repository].self, from: itemsData)
+
+                entity.removeFromResults(entity.results ?? [])
+                entity.addToResults(NSSet(array: repositiries))
                 dbContainer.saveContext()
             } catch {
                 failure(error)

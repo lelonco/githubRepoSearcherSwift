@@ -44,13 +44,12 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         try? fetchedResultController.performFetch()
     }
 
-    func fetchRepos(searchText: String) throws {
+    func fetchRepos(searchText: String, complition: @escaping () -> Void) throws {
         var possibleError: Error?
         let fetchReq: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
         fetchReq.predicate = NSPredicate(format: "searchRequest == %@", searchText)
         fetchReq.sortDescriptors = [NSSortDescriptor(key: "searchRequest", ascending: false)]
 
-            //        request.predicate()
         var savedResult: SearchResult?
         do {
             savedResult = try context.fetch(fetchReq).first
@@ -67,6 +66,7 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         updateAndFetchRepos()
         repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
             self.searchResult = result
+            complition()
         } failure: { error in
             possibleError = error
         }
@@ -102,7 +102,6 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     func cellviewModel(for indexPath: IndexPath) -> CellViewModel {
         let repo = repoFetchedResultController?.fetchedObjects?[indexPath.row]
 
-//        let repo = (searchResult?.results?.allObjects as? Array<Repository>)?[indexPath.row]
         let name = repo?.fullName ?? ""
         let language = repo?.language ?? ""
         let stars = Int(repo?.starsCount ?? 0)
@@ -122,9 +121,10 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
         self.reloadUI?()
     }
 
+    // MARK: - Table view helpers
+
     func numberOfRowsInSection() -> Int? {
         repoFetchedResultController?.fetchedObjects?.count
-//        searchResult?.results?.count
     }
 
     func numberOfSections() -> Int {
