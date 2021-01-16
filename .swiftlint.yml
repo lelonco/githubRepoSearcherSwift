@@ -78,6 +78,10 @@ identifier_name:
     - y
     - z
 
+file_length:
+  warning: 500
+  error: 700
+
 line_length:
   ignores_urls: true
   ignores_function_declarations: true
