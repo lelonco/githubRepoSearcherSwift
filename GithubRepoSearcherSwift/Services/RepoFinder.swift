@@ -10,7 +10,7 @@ import CoreData
 protocol RepoFinderProtocol {
     var searchResult: SearchResult? { get }
     func findRepositories(with entity: SearchResult,
-                          dbContainer: PersistentContainer,
+                          context: NSManagedObjectContext,
                           success:@escaping (SearchResult) -> Void,
                           failure:@escaping (Error) -> Void)
 }
@@ -21,10 +21,10 @@ class RepoFinder: RepoFinderProtocol {
     private let networkManager = NetworkManager.shared
 
     func findRepositories(with entity: SearchResult,
-                          dbContainer: PersistentContainer,
+                          context: NSManagedObjectContext,
                           success:@escaping (SearchResult) -> Void,
                           failure: @escaping (Error) -> Void) {
-        let context = dbContainer.viewContext
+//        let context = context.viewContext
         guard let text = entity.searchRequest else {
             failure(NSError(domain: "Cant get search tex", code: -999, userInfo: nil))
             return
@@ -51,7 +51,7 @@ class RepoFinder: RepoFinderProtocol {
                 entity.removeFromResults(entity.results ?? [])
                 entity.addToResults(NSSet(array: repositiries))
                 self.searchResult = entity
-                dbContainer.saveContext()
+                try context.save()
                 DispatchQueue.main.async {
                     success(entity)
                 }

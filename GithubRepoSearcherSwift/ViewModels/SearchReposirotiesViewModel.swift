@@ -5,7 +5,7 @@
 //  Created by Yaroslav on 08.01.2021.
 //
 
-import CoreData
+import MagicalRecord
 import Connectivity
 
 class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate {
@@ -14,19 +14,20 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     private var searchResult: SearchResult?
     var reloadUI: (() -> Void)?
     private let repoFinder: RepoFinderProtocol
-    private let dbContainer = DatabaseManager.shared.persistantContainer
-    lazy var fetchedResultController: NSFetchedResultsController<SearchResult> = {
-        let request: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
+//    private let dbContainer = DatabaseManager.shared.persistantContainer
+    lazy var fetchedResultController: NSFetchedResultsController<NSFetchRequestResult> = {
+        let request = SearchResult.mr_createFetchRequest()
         let sort = NSSortDescriptor(key: #keyPath(SearchResult.searchRequest), ascending: false)
         request.sortDescriptors = [sort]
-        let controller = NSFetchedResultsController(fetchRequest: request,
-                                                    managedObjectContext: self.context,
-                                                    sectionNameKeyPath: nil,
-                                                    cacheName: nil)
+        let controller = SearchResult.mr_fetchController(request,
+                                                         delegate: self,
+                                                         useFileCache: false,
+                                                         groupedBy: nil,
+                                                         in: NSManagedObjectContext.mr_default())
         return controller
     }()
 
-    lazy var repoFetchedResultController: NSFetchedResultsController<Repository>? = nil
+    lazy var repoFetchedResultController: NSFetchedResultsController<NSFetchRequestResult>? = nil
 
     init(result: SearchResult, repoFinder: RepoFinderProtocol = RepoFinder()) {
         self.searchResult = result
@@ -45,8 +46,9 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     }
 
     func completeConfiguration() {
-        fetchedResultController.delegate = self
-        try? fetchedResultController.performFetch()
+//        fetchedResultController.delegate = self
+        SearchResult.mr_performFetch(fetchedResultController)
+//        try? fetchedResultController.performFetch()
         configureConnectivityNotifier()
     }
 
@@ -68,14 +70,19 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
             throw(NSError(domain: "Cant unwrap entity", code: -999, userInfo: ["message": "Cant unwrap entity"]))
         }
 
-        dbContainer.saveContext()
+        do {
+            try self.context.save()
+        } catch {
+            throw(error)
+        }
+//        dbContainer.saveContext()
         updateAndFetchRepos()
         if !self.didReachable {
             throw(NSError(domain: "You re offline. \nYou steel can get your previous search results",
                           code: -999,
                           userInfo: ["message": "You re offline. \nYou steel can get your previous search results"]))
         }
-        repoFinder.findRepositories(with: unwrappedResult, dbContainer: dbContainer) { result in
+        repoFinder.findRepositories(with: unwrappedResult, context: self.context) { result in
             self.searchResult = result
             complition()
         } failure: { error in
@@ -93,25 +100,26 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
 
     func createRepoFetchedResults() {
         guard let result = self.searchResult else { return }
-        let request: NSFetchRequest<Repository> = Repository.fetchRequest()
-        let sort = NSSortDescriptor(key: #keyPath(Repository.starsCount), ascending: false)
-        request.sortDescriptors = [sort]
+        let request = Repository.mr_requestAllSorted(by: "starsCount", ascending: false)
+//        let sort = NSSortDescriptor(key: #keyPath(Repository.starsCount), ascending: false)
+//        request.sortDescriptors = [sort]
         request.fetchLimit = 30
         let objectId = result.objectID
         request.predicate = NSPredicate(format: "searchResult == %@", objectId)
-        let controller = NSFetchedResultsController(fetchRequest: request,
-                                                    managedObjectContext: self.context,
-                                                    sectionNameKeyPath: nil,
-                                                    cacheName: nil)
+        let controller = Repository.mr_fetchController(request,
+                                                       delegate: self,
+                                                       useFileCache: false,
+                                                       groupedBy: nil,
+                                                       in: self.context)
         self.repoFetchedResultController = controller
     }
 
     func observeRepoFetchedResults() {
-        repoFetchedResultController?.delegate = self
-        try? repoFetchedResultController?.performFetch()
+        guard let controller = self.repoFetchedResultController else { return }
+        Repository.mr_performFetch(controller)
     }
     func cellviewModel(for indexPath: IndexPath) -> CellViewModel {
-        let repo = repoFetchedResultController?.fetchedObjects?[indexPath.row]
+        let repo = repoFetchedResultController?.fetchedObjects?[indexPath.row] as? Repository
 
         let name = repo?.fullName ?? ""
         let language = repo?.language ?? ""
@@ -120,7 +128,7 @@ class SearchReposirotiesViewModel: NSObject, NSFetchedResultsControllerDelegate 
     }
 
     var context: NSManagedObjectContext = {
-        DatabaseManager.shared.persistantContainer.viewContext
+        NSManagedObjectContext.mr_default()
     }()
 
     func title() -> String? {

@@ -6,20 +6,19 @@
 //
 
 import Foundation
-import CoreData
+import MagicalRecord
 class CachedResultsViewModel: NSObject {
 
     private var searchResults: [SearchResult] = []
 
-    private lazy var fetchedResultController: NSFetchedResultsController<SearchResult> = {
-        let request: NSFetchRequest<SearchResult> = SearchResult.fetchRequest()
-        let sort = NSSortDescriptor(key: #keyPath(SearchResult.searchRequest), ascending: false)
-        let context = DatabaseManager.shared.persistantContainer.viewContext
-        request.sortDescriptors = [sort]
-        let controller = NSFetchedResultsController(fetchRequest: request,
-                                                    managedObjectContext: context,
-                                                    sectionNameKeyPath: nil,
-                                                    cacheName: nil)
+    private lazy var fetchedResultController: NSFetchedResultsController<NSFetchRequestResult> = {
+        let request = SearchResult.mr_requestAllSorted(by: "searchRequest", ascending: false)
+        let context = NSManagedObjectContext.mr_default()
+        let controller = SearchResult.mr_fetchController(request,
+                                                         delegate: self,
+                                                         useFileCache: false,
+                                                         groupedBy: nil,
+                                                         in: context)
         return controller
     }()
 
@@ -27,13 +26,12 @@ class CachedResultsViewModel: NSObject {
 
     override init() {
         super.init()
-        fetchedResultController.delegate = self
         fetchCachedResults()
     }
 
     func fetchCachedResults() {
-        try? fetchedResultController.performFetch()
-        searchResults = fetchedResultController.fetchedObjects ?? []
+        SearchResult.mr_performFetch(fetchedResultController)
+        searchResults = (fetchedResultController.fetchedObjects as? [SearchResult]) ?? []
     }
 
     func cellviewModel(for indexPath: IndexPath) -> CellViewModel {

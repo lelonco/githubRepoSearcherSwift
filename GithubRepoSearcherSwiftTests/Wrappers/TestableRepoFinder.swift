@@ -13,20 +13,20 @@ class TestableRepoFinder: RepoFinderProtocol {
     var searchResult: SearchResult?
 
     func findRepositories(with entity: SearchResult,
-                          dbContainer: PersistentContainer,
+                          context: NSManagedObjectContext,
                           success: @escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
         if let seatchResult = self.searchResult {
             success(seatchResult)
             return
         }
-        let context = dbContainer.viewContext
+        let context = context.viewContext
         let searchResult = SearchResult(context: context)
         guard entity.searchRequest != nil  else {
             failure(NSError(domain: "Cant get search tex", code: -999, userInfo: nil))
             return
         }
         self.searchResult = entity
-        dbContainer.saveContext()
+        context.saveContext()
         guard let path = Bundle.main.path(forResource: "JSON", ofType: "json") else {
             failure(NSError(domain: "Cant get file path", code: -999, userInfo: nil))
             return
@@ -43,7 +43,7 @@ class TestableRepoFinder: RepoFinderProtocol {
 
             let repo = try decoder.decode([Repository].self, from: data)
             self.searchResult?.addToResults(NSSet(array: repo))
-            dbContainer.saveContext()
+            context.saveContext()
             self.searchResult = searchResult
 
             success(searchResult)
