@@ -14,8 +14,8 @@ class TestsSearchResultsViewModel: XCTestCase {
     var fakeRepoFinder: TestableRepoFinder!
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        dbManager = TestableDatabaseManager()
-        fakeRepoFinder = TestableRepoFinder()
+        dbManager = TestableDatabaseManager.shared
+        fakeRepoFinder = TestableRepoFinder(dbManager: dbManager)
     }
 
     override func tearDownWithError() throws {
@@ -26,30 +26,28 @@ class TestsSearchResultsViewModel: XCTestCase {
 
     func testFetch() throws {
 
-        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder, dbManager: dbManager)
 
-        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test", complition: {}))
     }
     func testNumberOfRows() throws {
         fakeRepoFinder.createFakeEntity()
-        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
-        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
-
-       XCTAssert(testviewModel.numberOfRowsInSection() == 1, "Expected 1 row")
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder, dbManager: dbManager)
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "TestRequest", complition: {}))
+        XCTAssert(testviewModel.numberOfRowsInSection() == 1, "Expected 1 row")
     }
 
     func testNumberOfSections() throws {
 
         fakeRepoFinder.createFakeEntity()
-        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder, dbManager: dbManager)
        XCTAssert(testviewModel.numberOfSections() == 1, "Expected 1 section")
     }
 
     func testCellviewModel() throws {
-        let fakeRepoFinder = TestableRepoFinder()
         fakeRepoFinder.createFakeEntity()
-        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder)
-        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "Test"))
+        let testviewModel = SearchReposirotiesViewModel(fakeRepoFinder, dbManager: dbManager)
+        XCTAssertNoThrow(try testviewModel.fetchRepos(searchText: "TestRequest", complition: {}))
         let cellviewModel = testviewModel.cellviewModel(for: IndexPath(row: 0, section: 0))
 
         XCTAssert(cellviewModel.titleText == "TestRepos/TestRepo", "Unexpected value")

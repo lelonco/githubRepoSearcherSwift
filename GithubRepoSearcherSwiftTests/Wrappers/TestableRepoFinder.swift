@@ -11,7 +11,11 @@ import CoreData
 
 class TestableRepoFinder: RepoFinderProtocol {
     var searchResult: SearchResult?
-
+    let dbManager: DatabaseManagerProtocol
+    init(dbManager: DatabaseManagerProtocol) {
+        self.dbManager = dbManager
+    }
+    
     func findRepositories(with entity: SearchResult,
                           dbContainer: PersistentContainer,
                           success: @escaping (SearchResult) -> Void, failure: @escaping (Error) -> Void) {
@@ -54,7 +58,7 @@ class TestableRepoFinder: RepoFinderProtocol {
     }
 
     func createFakeEntity() {
-        let testableDB = TestableDatabaseManager()
+        let testableDB = self.dbManager
         let repo = Repository(context: testableDB.managedContext)
         repo.fullName = "TestRepos/TestRepo"
         repo.language = "TestLanguage"

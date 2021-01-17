@@ -9,29 +9,37 @@ import Foundation
 import CoreData
 @testable import GithubRepoSearcherSwift
 
-class TestableDatabaseManager: DatabaseManager {
+class TestableDatabaseManager: DatabaseManagerProtocol {
+    static let shared = TestableDatabaseManager(modelName: "Model")
+
+    let modelName: String
+    lazy var persistantContainer: PersistentContainer = {
+        let persistantContainer = PersistentContainer(name: modelName)
+        let persistentStoreDescription = NSPersistentStoreDescription()
+        persistentStoreDescription.type = NSInMemoryStoreType
+        persistantContainer.persistentStoreDescriptions = [persistentStoreDescription]
+
+        persistantContainer.loadPersistentStores { _, error in
+            persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            if let error = error {
+                fatalError("Unresolved error: \(error.localizedDescription)")
+            }
+        }
+        return persistantContainer
+    }()
+
+    lazy var managedContext: NSManagedObjectContext = {
+        persistantContainer.viewContext
+    }()
+    
 
     convenience init() {
         self.init(modelName: "Model")
+        
     }
 
-    override init(modelName: String) {
-        super.init(modelName: modelName)
-
-        let persistentStoreDescription = NSPersistentStoreDescription()
-        persistentStoreDescription.type = NSInMemoryStoreType
-
-        let container = PersistentContainer(name: modelName)
-        container.persistentStoreDescriptions = [persistentStoreDescription]
-
-        container.loadPersistentStores { (_, error) in
-            if let error = error as NSError? {
-                fatalError(
-                    "Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-        self.persistantContainer = container
-        self.managedContext = container.viewContext
+     init(modelName: String) {
+        self.modelName = modelName
     }
 
 }

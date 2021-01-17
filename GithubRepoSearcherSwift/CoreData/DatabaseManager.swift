@@ -7,7 +7,19 @@
 
 import CoreData
 
-class DatabaseManager {
+protocol DatabaseManagerProtocol {
+    var persistantContainer: PersistentContainer { get }
+    var managedContext: NSManagedObjectContext { get }
+    func saveContext(_ managedContext: NSManagedObjectContext?)
+}
+
+extension DatabaseManagerProtocol {
+    func saveContext(_ managedContext: NSManagedObjectContext? = nil) {
+        persistantContainer.saveContext()
+    }
+}
+
+class DatabaseManager: DatabaseManagerProtocol {
     let modelName: String
     static let shared = DatabaseManager(modelName: "Model")
 
@@ -15,7 +27,7 @@ class DatabaseManager {
         let persistantContainer = PersistentContainer(name: modelName)
 
         persistantContainer.loadPersistentStores { _, error in
-            self.persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            persistantContainer.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error = error {
                 fatalError("Unresolved error: \(error.localizedDescription)")
             }
@@ -26,16 +38,6 @@ class DatabaseManager {
     lazy var managedContext: NSManagedObjectContext = {
         persistantContainer.viewContext
     }()
-    func saveContext(_ managedContext: NSManagedObjectContext? = nil) {
-        let context = managedContext ?? self.managedContext
-        if context.hasChanges {
-            do {
-                try persistantContainer.viewContext.save()
-            } catch {
-                fatalError("An error occurred while saving: \(error)")
-            }
-        }
-    }
 
     init(modelName: String) {
         self.modelName = modelName
